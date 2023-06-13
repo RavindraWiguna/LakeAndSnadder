@@ -2,6 +2,7 @@
 import { Player } from "./player.js";
 
 let username = "";
+let privateUser = "";
 let onlinePlayers = [];
 // in game data player snake and ladder
 let playersData = [];
@@ -17,6 +18,8 @@ const socket = io.connect("http://localhost:3000");
  */
 let chats = [];
 
+let privateChats = { privateUser: [] };
+
 // dom input username
 const inputUsername = document.getElementById("username");
 // dom online player
@@ -25,6 +28,16 @@ const onlinePlayerDom = document.getElementById("online-player");
 const chatListDom = document.getElementById("chit-chat");
 // send chat input
 const chatInput = document.getElementById("chat");
+// private chat title
+const privateChatTitle = document.getElementById("private-chat-title");
+// private chat input
+const privateChatInput = document.getElementById("private-chat");
+// private chat list
+const privateChatList = document.getElementById("private-chat-list");
+// popup parent
+const popup = document.getElementById("pop-up");
+// popup message
+const popupMessage = document.getElementById("pop-up-message");
 
 const renderOnlinePlayers = () => {
   // render use list of players
@@ -34,7 +47,18 @@ const renderOnlinePlayers = () => {
   onlinePlayers.forEach((player, index) => {
     // Create a new list item element for each player
     const playerItem = document.createElement("li");
-    playerItem.textContent = `${index + 1}. ${player}`;
+    playerItem.textContent = `- ${player}`;
+
+    // add class
+    playerItem.classList.add("player-list");
+
+    playerItem.addEventListener("click", () => {
+      if (player != username) {
+        privateUser = player;
+        privateChatTitle.textContent = `Private:  ${player}`;
+        renderPrivateChat();
+      }
+    });
 
     // Append the player item to the online player list
     onlinePlayerDom.appendChild(playerItem);
@@ -47,9 +71,40 @@ const renderChatPlayers = () => {
   chats.forEach((chat) => {
     const chatItem = document.createElement("li");
     chatItem.textContent = `${chat.username}: ${chat.message}`;
-
+    // add class
+    chatItem.classList.add("chat-list");
     chatListDom.appendChild(chatItem);
   });
+};
+
+const renderPrivateChat = () => {
+  // remove child privateChatList
+  privateChatList.innerHTML = "";
+
+  const currentNeededList = privateChats.privateUser.filter((item) => {
+    return item.from == privateUser || item.to == privateUser;
+  });
+
+  currentNeededList.forEach((item) => {
+    const privateChatItem = document.createElement("li");
+    privateChatItem.textContent = `${item.from} - ${item.message}`;
+
+    privateChatItem.classList.add("chat-list");
+
+    privateChatList.appendChild(privateChatItem);
+  });
+};
+
+const showPopup = (sender) => {
+  popup.classList.remove("hide-popup");
+  popup.classList.add("show-popup");
+  popupMessage.innerHTML = `Message from ${sender}`;
+};
+
+const hidePopup = () => {
+  popup.classList.remove("show-popup");
+  popup.classList.add("hide-popup");
+  popupMessage.innerHTML = "";
 };
 
 function drawBoard(canvas, context, boardImg) {
@@ -168,6 +223,31 @@ window.joinGame = (e) => {
   inputUsername.setAttribute("disabled", true);
 };
 
+window.sendPrivateMessage = (e) => {
+  e.preventDefault();
+  // console.log(privateChatInput.value);
+
+  if (privateChatInput == "" || username == "" || privateUser == "") {
+    return;
+  }
+
+  socket.emit("private-chat", {
+    from: username,
+    to: privateUser,
+    message: privateChatInput.value,
+  });
+
+  privateChats.privateUser.push({
+    from: "me",
+    to: privateUser,
+    message: privateChatInput.value,
+  });
+
+  // console.log(privateChats);
+  privateChatInput.value = "";
+  renderPrivateChat();
+};
+
 window.sendMessage = (e) => {
   e.preventDefault();
   if (chatInput.value === "") {
@@ -233,4 +313,15 @@ socket.on("chat", (chat) => {
   }
   chats.push(chat);
   renderChatPlayers();
+});
+
+socket.on("private-chat", (data) => {
+  if (data.to == username) {
+    privateChats.privateUser.push(data);
+    showPopup(data.from);
+    setTimeout(() => {
+      hidePopup();
+    }, 1000);
+  }
+  renderPrivateChat();
 });

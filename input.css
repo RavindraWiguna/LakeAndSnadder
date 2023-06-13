@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .player-list {
+    @apply font-medium text-slate-600 text-base pl-7 cursor-pointer hover:bg-slate-200 hover:shadow-sm;
+  }
+
+  .chat-list {
+    @apply font-medium text-slate-600 text-base pl-7;
+  }
+
+  .hide-popup{
+    @apply hidden;
+  }
+
+  .show-popup{
+    @apply absolute;
+  }
+}

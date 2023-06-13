@@ -97,6 +97,10 @@ io.on("connection", (socket) => {
   //   io.sockets.emit("rollDice", data, turn);
   // });
 
+  socket.on("private-chat", (data) => {
+    io.sockets.emit("private-chat", data);
+  });
+
   socket.on("restart", () => {
     users = [];
     io.sockets.emit("restart");
