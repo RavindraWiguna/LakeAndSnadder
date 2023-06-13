@@ -553,6 +553,10 @@ video {
   display: none;
 }
 
+.show-popup {
+  position: absolute;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
