@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
 
     // ok sementara tak blok dulu yaa kalo udah penuh (4 orang) (BIAR NGEROOM)
     if (users.length == 4) {
-      io.socket.emit("client-roomIsFull");
+      io.sockets.emit("client-roomIsFull");
       return;
     }
 
