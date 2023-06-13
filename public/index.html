@@ -9,7 +9,7 @@
 
   <body>
     <main class="min-h-screen">
-      <div class="h-screen grid grid-cols-2">
+      <div class="h-screen flex">
         <div class="p-20">
           <!-- <img class="" src="./images/Boards/Board-1.png" alt="" /> -->
           <canvas id="game-canvas"></canvas>
@@ -54,16 +54,48 @@
           </form>
 
           <!-- online player -->
-          <div class="grid grid-cols-12 border h-96">
-            <div class="col-span-4 overflow-y-auto">
-              <h3 class="text-lg sticky top-0">Online Players:</h3>
+          <div class="flex border rounded-lg h-96">
+            <div class="overflow-y-auto w-48">
+              <h3
+                class="sticky top-0 block w-full p-2 px-8 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-300 font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                Online Player
+              </h3>
               <ul id="online-player"></ul>
             </div>
-            <div class="col-span-8 border overflow-y-auto flex flex-col">
+            <div class="border rounded-lg overflow-y-auto flex flex-col w-56">
               <h3
-                class="sticky top-0 block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-300 font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="sticky top-0 block w-full p-2 pl-7 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-300 font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                id="private-chat-title"
               >
-                Chat
+                Private:
+              </h3>
+
+              <div class="grow">
+                <ul id="private-chat-list"></ul>
+              </div>
+              <form class="sticky bottom-0">
+                <input
+                  type="search"
+                  id="private-chat"
+                  class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Message"
+                  required
+                />
+                <button
+                  type="submit"
+                  class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onclick="sendPrivateMessage(event)"
+                >
+                  Send
+                </button>
+              </form>
+            </div>
+            <div class="border rounded-lg overflow-y-auto flex flex-col w-56">
+              <h3
+                class="sticky top-0 block w-full p-2 pl-7 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-300 font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                Public
               </h3>
               <div class="grow">
                 <ul id="chit-chat"></ul>
@@ -86,8 +118,6 @@
               </form>
             </div>
           </div>
-          <!-- chat -->
-          <!-- dice -->
         </div>
       </div>
     </main>
