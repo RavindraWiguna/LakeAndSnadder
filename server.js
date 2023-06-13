@@ -35,6 +35,22 @@ const globalSpritePaths = [
   "./images/Pieces/YellowPiece.png",
 ];
 
+// list of snake and ladder for board 1
+let teleporters = {};
+//init
+for(let i = 0;i<101;i++){
+  teleporters[i]=i;
+}
+//now modify
+teleporters[3]=24;
+teleporters[12]=46;
+teleporters[48]=6;
+teleporters[21]=42;
+teleporters[56]=75;
+teleporters[71]=53;
+teleporters[72]=93;
+teleporters[97]=43;
+
 // =========================================
 
 io.on("connection", (socket) => {
@@ -99,7 +115,7 @@ io.on("connection", (socket) => {
 
   // bilang ready dulu, kalo udah > 1 meng baru mulai main this also buat ngirim data kek giliran ke berapa ada berapa player dan lain sebagainya
   socket.on("server-test", (username) => {
-    console.log("WEEEE");
+    // console.log("WEEEE");
     playerIsReady[username] = true; // set flag di map isready ke true
 
     // cek apa semua player udah ready
@@ -123,7 +139,15 @@ io.on("connection", (socket) => {
 
   socket.on("server-playerGerak", (indexPlayer, diceRoll) => {
     // nanti sini ada ngecek snake ladder
-    let finalPosition = users[indexPlayer].pos + diceRoll;
+    // console.log(indexPlayer, diceRoll, 'id, dice');
+    let tmpos = users[indexPlayer].pos + diceRoll;
+    
+    // kelebihan mundur
+    if(tmpos > 100){
+      tmpos = 200 - tmpos;
+    }
+
+    let finalPosition = teleporters[tmpos];
 
     // update pos di server
     users[indexPlayer].pos = finalPosition;

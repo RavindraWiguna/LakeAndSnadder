@@ -187,7 +187,8 @@ socket.on("client-join", (username) => {
 
 socket.on("client-allPlayerReady", (playerList, turn) => {
   gameTurn = turn;
-
+  
+  
   // cari index ni player
   for (let i = 0; i < playerList.length; i++) {
     const player = playerList[i];
@@ -196,9 +197,11 @@ socket.on("client-allPlayerReady", (playerList, turn) => {
     }
     playersData.push(
       new Player(player.id, player.name, player.spritePath, player.pos)
-    );
+      );
   }
-
+  
+  let gamemsg = document.getElementById('game-msg');
+  gamemsg.textContent=playersData[gameTurn%playersData.length].name + ' turn';
   console.log("semua client udah ready", "ini index", myIndex);
 });
 
@@ -209,7 +212,9 @@ socket.on("client-roomIsFull", () => {
 socket.on("client-updatePlayerPosTurn", (indexPlayer, finalPosition, turn) => {
   playersData[indexPlayer].pos = finalPosition;
   gameTurn = turn;
-  console.log("ok ada yang gerak");
+  let gamemsg = document.getElementById('game-msg');
+  gamemsg.textContent=playersData[gameTurn%playersData.length].name + ' turn';
+  console.log("ok ada yang gerak", turn);
 });
 
 socket.on("chat", (chat) => {
