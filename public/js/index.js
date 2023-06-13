@@ -241,6 +241,9 @@ let readyButton = document.getElementById("ready-btn");
 readyButton.addEventListener("click", function () {
   // disable biar gak bisa ready 2 kali
   readyButton.disabled = true;
+  readyButton.classList.remove("bg-blue-700");
+  readyButton.style.backgroundColor = "gray";
+
   // bilang ke server oh kita ready cuy
   socket.emit("server-test", username);
   console.log("bilangan ke seerver aku ready");
