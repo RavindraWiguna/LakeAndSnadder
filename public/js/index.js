@@ -1,3 +1,6 @@
+// Import the class
+import { Player } from './player.js';
+
 let username = "";
 let onlinePlayers = ["avin", "rama", "rere"];
 
@@ -73,7 +76,7 @@ const joinGame = (e) => {
   inputUsername.setAttribute("disabled", true);
 };
 
-function drawBoard(context, boardImg){
+function drawBoard(canvas, context, boardImg){
   boardImg.onload = function() {
 
     // Calculate the scale factor to fit the image within the canvas
@@ -87,6 +90,7 @@ function drawBoard(context, boardImg){
     let x = (canvas.width - newWidth) / 2;
     let y = (canvas.height - newHeight) / 2;
 
+    // console.log(x, y, canvas.width, newHeight);
     // Draw the resized image on the canvas
     context.drawImage(boardImg, x, y, newWidth, newHeight);
   };
@@ -101,8 +105,18 @@ let context = canvas.getContext("2d");
 let boardImg = new Image();
 let boardType = 1;
 boardImg.src = `/images/Boards/Board-${boardType}.png`;
-drawBoard(context, boardImg);
+drawBoard(canvas, context, boardImg);
 renderOnlinePlayers();
 renderChatPlayers();
 
+// dummy buat list player ceritanya
+let playerList = [
+  new Player(0, "dummy1", "/images/Pieces/BluePiece.png", 1),
+  new Player(1, "dummy2", "/images/Pieces/RedPiece.png", 2),
+  new Player(2, "dummy3", "/images/Pieces/GreenPiece.png", 3),
+];
 
+playerList.forEach((player) => {
+  // Perform some action for each player
+  player.render(canvas, context);
+});
