@@ -73,5 +73,36 @@ const joinGame = (e) => {
   inputUsername.setAttribute("disabled", true);
 };
 
+function drawBoard(context, boardImg){
+  boardImg.onload = function() {
+
+    // Calculate the scale factor to fit the image within the canvas
+    let scale = Math.min(canvas.width / boardImg.width, canvas.height / boardImg.height);
+    
+    // Calculate the new dimensions of the image
+    let newWidth = boardImg.width * scale;
+    let newHeight = boardImg.height * scale;
+
+    // Calculate the position to center the image on the canvas
+    let x = (canvas.width - newWidth) / 2;
+    let y = (canvas.height - newHeight) / 2;
+
+    // Draw the resized image on the canvas
+    context.drawImage(boardImg, x, y, newWidth, newHeight);
+  };
+};
+
+// draw the first board (later di game loop)
+let canvas = document.getElementById("game-canvas");
+canvas.width = document.documentElement.clientHeight * 0.8; // set ukuran canvas
+canvas.height = document.documentElement.clientHeight * 0.8;
+// the pencil sir :D
+let context = canvas.getContext("2d");
+let boardImg = new Image();
+let boardType = 1;
+boardImg.src = `/images/Boards/Board-${boardType}.png`;
+drawBoard(context, boardImg);
 renderOnlinePlayers();
 renderChatPlayers();
+
+
