@@ -30,6 +30,10 @@ const privateChatTitle = document.getElementById("private-chat-title");
 const privateChatInput = document.getElementById("private-chat");
 // private chat list
 const privateChatList = document.getElementById("private-chat-list");
+// popup parent
+const popup = document.getElementById("pop-up");
+// popup message
+const popupMessage = document.getElementById("pop-up-message");
 
 const renderOnlinePlayers = () => {
   // render use list of players
@@ -85,6 +89,18 @@ const renderPrivateChat = () => {
 
     privateChatList.appendChild(privateChatItem);
   });
+};
+
+const showPopup = (sender) => {
+  popup.classList.remove("hide-popup");
+  popup.classList.add("show-popup");
+  popupMessage.innerHTML = `Message from ${sender}`;
+};
+
+const hidePopup = () => {
+  popup.classList.remove("show-popup");
+  popup.classList.add("hide-popup");
+  popupMessage.innerHTML = "";
 };
 
 function drawBoard(canvas, context, boardImg) {
@@ -238,7 +254,10 @@ socket.on("chat", (chat) => {
 socket.on("private-chat", (data) => {
   if (data.to == username) {
     privateChats.privateUser.push(data);
-    console.log(data);
+    showPopup(data.from);
+    setTimeout(() => {
+      hidePopup();
+    }, 1000);
   }
   renderPrivateChat();
 });
