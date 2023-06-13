@@ -117,6 +117,7 @@ drawImage();
 
 // ROLL
 let rollButton = document.getElementById("roll-btn");
+let selfmsg = document.getElementById("self-msg");
 // Add event listener for the "click" event
 rollButton.addEventListener("click", function () {
   // Code to be executed when the button is clicked
@@ -129,7 +130,7 @@ rollButton.addEventListener("click", function () {
 
   // ooh giliran kite, gas
   let fate = gachaDiceFate();
-
+  selfmsg.textContent = "You just rolled " + fate;
   // bilangan ke server, nanti server nentuin final osisi
   socket.emit("server-playerGerak", myIndex, fate);
 });
@@ -187,8 +188,7 @@ socket.on("client-join", (username) => {
 
 socket.on("client-allPlayerReady", (playerList, turn) => {
   gameTurn = turn;
-  
-  
+
   // cari index ni player
   for (let i = 0; i < playerList.length; i++) {
     const player = playerList[i];
@@ -197,11 +197,12 @@ socket.on("client-allPlayerReady", (playerList, turn) => {
     }
     playersData.push(
       new Player(player.id, player.name, player.spritePath, player.pos)
-      );
+    );
   }
-  
-  let gamemsg = document.getElementById('game-msg');
-  gamemsg.textContent=playersData[gameTurn%playersData.length].name + ' turn';
+
+  let gamemsg = document.getElementById("game-msg");
+  gamemsg.textContent =
+    playersData[gameTurn % playersData.length].name + " turn";
   console.log("semua client udah ready", "ini index", myIndex);
 });
 
@@ -212,9 +213,17 @@ socket.on("client-roomIsFull", () => {
 socket.on("client-updatePlayerPosTurn", (indexPlayer, finalPosition, turn) => {
   playersData[indexPlayer].pos = finalPosition;
   gameTurn = turn;
-  let gamemsg = document.getElementById('game-msg');
-  gamemsg.textContent=playersData[gameTurn%playersData.length].name + ' turn';
+  let gamemsg = document.getElementById("game-msg");
+  gamemsg.textContent =
+    playersData[gameTurn % playersData.length].name + " turn";
   console.log("ok ada yang gerak", turn);
+});
+
+socket.on("client-gameover", (pemenang) => {
+  let gamemsg = document.getElementById("game-msg");
+  gamemsg.textContent = pemenang + " won!!";
+  let readyButton = document.getElementById("ready-btn");
+  readyButton.disabled = false;
 });
 
 socket.on("chat", (chat) => {

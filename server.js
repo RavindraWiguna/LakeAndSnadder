@@ -38,18 +38,18 @@ const globalSpritePaths = [
 // list of snake and ladder for board 1
 let teleporters = {};
 //init
-for(let i = 0;i<101;i++){
-  teleporters[i]=i;
+for (let i = 0; i < 101; i++) {
+  teleporters[i] = i;
 }
 //now modify
-teleporters[3]=24;
-teleporters[12]=46;
-teleporters[48]=6;
-teleporters[21]=42;
-teleporters[56]=75;
-teleporters[71]=53;
-teleporters[72]=93;
-teleporters[97]=43;
+teleporters[3] = 24;
+teleporters[12] = 46;
+teleporters[48] = 6;
+teleporters[21] = 42;
+teleporters[56] = 75;
+teleporters[71] = 53;
+teleporters[72] = 93;
+teleporters[97] = 43;
 
 // =========================================
 
@@ -141,9 +141,9 @@ io.on("connection", (socket) => {
     // nanti sini ada ngecek snake ladder
     // console.log(indexPlayer, diceRoll, 'id, dice');
     let tmpos = users[indexPlayer].pos + diceRoll;
-    
+
     // kelebihan mundur
-    if(tmpos > 100){
+    if (tmpos > 100) {
       tmpos = 200 - tmpos;
     }
 
@@ -151,6 +151,12 @@ io.on("connection", (socket) => {
 
     // update pos di server
     users[indexPlayer].pos = finalPosition;
+
+    if (finalPosition == 100) {
+      gameIsStarted = false;
+      console.log("ada menang");
+      io.sockets.emit("client-gameover", indexPlayer);
+    }
 
     // game turn tambah
     gameTurn++;
