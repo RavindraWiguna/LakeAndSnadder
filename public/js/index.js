@@ -200,12 +200,12 @@ rollButton.addEventListener("click", function () {
 function rollDiceAnimation(diceImg, rollResult) {
   // Array of dice images
   const diceImages = [
-    "/images/Dices/Dices-1.png",
-    "/images/Dices/Dices-2.png",
-    "/images/Dices/Dices-3.png",
-    "/images/Dices/Dices-4.png",
-    "/images/Dices/Dices-5.png",
-    "/images/Dices/Dices-6.png",
+    "/images/Dices/RedDices/Dices-1.png",
+    "/images/Dices/RedDices/Dices-2.png",
+    "/images/Dices/RedDices/Dices-3.png",
+    "/images/Dices/RedDices/Dices-4.png",
+    "/images/Dices/RedDices/Dices-5.png",
+    "/images/Dices/RedDices/Dices-6.png",
   ];
 
   // Number of animation frames
