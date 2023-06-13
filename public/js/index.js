@@ -2,7 +2,8 @@
 import { Player } from "./player.js";
 
 let username = "";
-let onlinePlayers = ["avin", "rama", "rere"];
+let onlinePlayers = [];
+const socket = io.connect("http://localhost:3000");
 
 /* type chats
   {
@@ -10,30 +11,16 @@ let onlinePlayers = ["avin", "rama", "rere"];
     message: string;
   }[]
  */
-let chats = [
-  {
-    username: "rama",
-    message: "hello world",
-    time: new Date().getTime(),
-  },
-  {
-    username: "avin",
-    message: "hello world",
-    time: new Date().getTime(),
-  },
-  {
-    username: "rere",
-    message: "yeyeye",
-    time: new Date().getTime(),
-  },
-];
+let chats = [];
 
 // dom input username
 const inputUsername = document.getElementById("username");
 // dom online player
 const onlinePlayerDom = document.getElementById("online-player");
 // dom chit-chat
-const chatDom = document.getElementById("chit-chat");
+const chatListDom = document.getElementById("chit-chat");
+// send chat input
+const chatInput = document.getElementById("chat");
 
 const renderOnlinePlayers = () => {
   // render use list of players
@@ -51,13 +38,13 @@ const renderOnlinePlayers = () => {
 };
 
 const renderChatPlayers = () => {
-  chatDom.innerHTML = "";
+  chatListDom.innerHTML = "";
 
   chats.forEach((chat) => {
     const chatItem = document.createElement("li");
     chatItem.textContent = `${chat.username}: ${chat.message}`;
 
-    chatDom.appendChild(chatItem);
+    chatListDom.appendChild(chatItem);
   });
 };
 
@@ -92,8 +79,6 @@ let boardType = 1;
 boardImg.src = `/images/Boards/Board-${boardType}.png`;
 renderOnlinePlayers();
 renderChatPlayers();
-
-// ni nyoba elemen gameplay outside of socket socketan
 
 // dummy buat list player ceritanya
 let playerList = [
@@ -139,8 +124,10 @@ rollButton.addEventListener("click", function () {
   // harusnya aman, udah ada game loop
 });
 
-// logical window render
-// window logical render
+// ===============
+// logical window
+// ===============
+
 window.joinGame = (e) => {
   e.preventDefault();
   if (inputUsername.value === "") {
@@ -149,9 +136,37 @@ window.joinGame = (e) => {
 
   username = inputUsername.value;
   // add event here
+  socket.emit("join", username);
 
   // delete join button
   document.getElementById("join-button").remove();
   // make disable input
   inputUsername.setAttribute("disabled", true);
 };
+
+window.sendMessage = (e) => {
+  e.preventDefault();
+  if (chatInput.value === "") {
+    return;
+  }
+  socket.emit("chat", { username, message: chatInput.value });
+  chatInput.value = "";
+};
+
+// ===============
+// logical socket
+// ===============
+socket.on("join", (username) => {
+  onlinePlayers = username;
+  console.log(username);
+  renderOnlinePlayers();
+});
+
+socket.on("chat", (chat) => {
+  if (username === "") {
+    alert("fill username first");
+    return;
+  }
+  chats.push(chat);
+  renderChatPlayers();
+});

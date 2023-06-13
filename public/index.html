@@ -39,7 +39,7 @@
                 type="search"
                 id="username"
                 class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="type your username"
+                placeholder="username"
                 required
               />
               <button
@@ -57,10 +57,7 @@
           <div class="grid grid-cols-12 border h-96">
             <div class="col-span-4 overflow-y-auto">
               <h3 class="text-lg sticky top-0">Online Players:</h3>
-              <ul id="online-player">
-                <li>1. player1</li>
-                <li>2. player2</li>
-              </ul>
+              <ul id="online-player"></ul>
             </div>
             <div class="col-span-8 border overflow-y-auto flex flex-col">
               <h3
@@ -69,26 +66,9 @@
                 Chat
               </h3>
               <div class="grow">
-                <ul id="chit-chat">
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak</li>
-                  <li>ajdla aksd sak asa</li>
-                </ul>
+                <ul id="chit-chat"></ul>
               </div>
-              <div class="sticky bottom-0">
+              <form class="sticky bottom-0">
                 <input
                   type="search"
                   id="chat"
@@ -99,10 +79,11 @@
                 <button
                   type="submit"
                   class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onclick="sendMessage(event)"
                 >
                   Send
                 </button>
-              </div>
+              </form>
             </div>
           </div>
           <!-- chat -->
@@ -112,6 +93,7 @@
     </main>
     <!--  -->
     <script src="js/gameutil.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/index.js" type="module"></script>
   </body>
 </html>

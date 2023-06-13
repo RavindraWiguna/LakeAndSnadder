@@ -19,12 +19,20 @@ io.on("connection", (socket) => {
   console.log("Made socket connection", socket.id);
 
   socket.on("join", (data) => {
-    users.push(data);
-    io.sockets.emit("join", data);
+    const userData = {
+      id: socket.id,
+      username: data,
+    };
+    users.push(userData);
+    console.log("Joined socket", data);
+    io.sockets.emit(
+      "join",
+      users.map((user) => user.username)
+    );
   });
 
-  socket.on("joined", () => {
-    socket.emit("joined", users);
+  socket.on("chat", (data) => {
+    io.sockets.emit("chat", data);
   });
 
   socket.on("rollDice", (data) => {
@@ -36,6 +44,17 @@ io.on("connection", (socket) => {
   socket.on("restart", () => {
     users = [];
     io.sockets.emit("restart");
+  });
+
+  socket.on("disconnect", () => {
+    // find user
+    const user = users.find((user) => user.id == socket.id);
+    if (user) {
+      console.log("disconnect ", user.username);
+      socket.broadcast.emit("leave", user.username);
+    }
+    // delete user
+    users = users.filter((user) => user.id != socket.id);
   });
 });
 
