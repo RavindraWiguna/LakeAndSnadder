@@ -1,6 +1,8 @@
 const express = require("express");
 const socket = require("socket.io");
 const http = require("http");
+// cors middleware
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000 || process.env.PORT;
@@ -8,6 +10,7 @@ const server = http.createServer(app);
 
 // Set static folder
 app.use(express.static("public"));
+app.use(cors());
 
 // Socket setup
 const io = socket(server);
