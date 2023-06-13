@@ -20,7 +20,7 @@ export class Player {
     if (y % 2 == 0) {
       x = 9 - x;
     }
-    return x, y;
+    return [x, y];
   }
 
   render(canvas, context) {
@@ -29,12 +29,12 @@ export class Player {
     let pieceSize = unitLength * 0.6;
 
     // calc letak di canvas
-    let x,
-      y = this.getRowCol();
-
+    let result = this.getRowCol();
+    let x = result[0];
+    let y = result[1];
     x = Math.floor(x * unitLength + pieceSize / 4);
     y = Math.floor(y * unitLength + pieceSize / 4);
-
+    console.log(x,y,this.name);
     context.drawImage(this.sprite, x, y, pieceSize, pieceSize);
   }
 }
