@@ -3,6 +3,10 @@ import { Player } from "./player.js";
 
 let username = "";
 let onlinePlayers = [];
+// in game data player snake and ladder
+let playersData = [];
+let gameTurn = 0; // game turn 1,2,3,4,5,6, bakal di mod buat nentuin if giliran karang
+let myIndex = 0; // index player ini di list player (playersData);
 const socket = io.connect("http://localhost:3000");
 
 /* type chats
@@ -81,14 +85,13 @@ renderOnlinePlayers();
 renderChatPlayers();
 
 // dummy buat list player ceritanya
-let playerList = [
-  new Player(0, "dummy1", "/images/Pieces/BluePiece.png", 1),
-  new Player(1, "dummy2", "/images/Pieces/RedPiece.png", 2),
-  new Player(2, "dummy3", "/images/Pieces/GreenPiece.png", 3),
-];
+// let playerList = [
+//   new Player(0, "dummy1", "/images/Pieces/BluePiece.png", 1),
+//   new Player(1, "dummy2", "/images/Pieces/RedPiece.png", 2),
+//   new Player(2, "dummy3", "/images/Pieces/GreenPiece.png", 3),
+// ];
 
 // GAME MAIN LOOP??
-
 // Set up a timer or animation loop to repeatedly draw the image
 function drawImage() {
   // Clear the canvas
@@ -98,7 +101,7 @@ function drawImage() {
   drawBoard(canvas, context, boardImg);
 
   // draw le player
-  playerList.forEach((player) => {
+  playersData.forEach((player) => {
     // Perform some action for each player
     player.render(canvas, context);
   });
@@ -110,19 +113,38 @@ function drawImage() {
 // Start the animation loop
 drawImage();
 
-// coba meng main
+// =============== EVENT LISTENER ===============
+
+// ROLL
 let rollButton = document.getElementById("roll-btn");
-let thisClientIndex = 1; // misal aja
 // Add event listener for the "click" event
 rollButton.addEventListener("click", function () {
   // Code to be executed when the button is clicked
+
+  // cek turn
+  if (gameTurn % playersData.length != myIndex) {
+    // bukan giliran sir, break
+    return;
+  }
+
+  // ooh giliran kite, gas
   let fate = gachaDiceFate();
-  playerList[thisClientIndex].pos += fate;
 
-  // add logic ngecek tile ada snake or ladder
-
-  // harusnya aman, udah ada game loop
+  // bilangan ke server, nanti server nentuin final osisi
+  socket.emit("server-playerGerak", myIndex, fate);
 });
+
+// READY
+let readyButton = document.getElementById("ready-btn");
+readyButton.addEventListener("click", function () {
+  // disable biar gak bisa ready 2 kali
+  readyButton.disabled = true;
+  // bilang ke server oh kita ready cuy
+  socket.emit("server-test", username);
+  console.log("bilangan ke seerver aku ready");
+});
+
+// ==================================================
 
 // ===============
 // logical window
@@ -136,7 +158,8 @@ window.joinGame = (e) => {
 
   username = inputUsername.value;
   // add event here
-  socket.emit("join", username);
+  console.log("ngemit si", username);
+  socket.emit("server-join", username);
 
   // delete join button
   document.getElementById("join-button").remove();
@@ -156,10 +179,37 @@ window.sendMessage = (e) => {
 // ===============
 // logical socket
 // ===============
-socket.on("join", (username) => {
+socket.on("client-join", (username) => {
   onlinePlayers = username;
-  console.log(username);
+  console.log(username, "ini");
   renderOnlinePlayers();
+});
+
+socket.on("client-allPlayerReady", (playerList, turn) => {
+  gameTurn = turn;
+
+  // cari index ni player
+  for (let i = 0; i < playerList.length; i++) {
+    const player = playerList[i];
+    if (player.name == username) {
+      myIndex = i;
+    }
+    playersData.push(
+      new Player(player.id, player.name, player.spritePath, player.pos)
+    );
+  }
+
+  console.log("semua client udah ready", "ini index", myIndex);
+});
+
+socket.on("client-roomIsFull", () => {
+  alert("room is currently full sir");
+});
+
+socket.on("client-updatePlayerPosTurn", (indexPlayer, finalPosition, turn) => {
+  playersData[indexPlayer].pos = finalPosition;
+  gameTurn = turn;
+  console.log("ok ada yang gerak");
 });
 
 socket.on("chat", (chat) => {

@@ -34,7 +34,10 @@ export class Player {
     let y = result[1];
     x = Math.floor(x * unitLength + pieceSize / 4);
     y = Math.floor(y * unitLength + pieceSize / 4);
-    console.log(x,y,this.name);
+    // console.log(x,y,this.name);
     context.drawImage(this.sprite, x, y, pieceSize, pieceSize);
   }
 }
+
+// export default Player;
+// module.exports = Player;
