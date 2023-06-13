@@ -10,17 +10,17 @@ export class Player {
     this.pos = pos;
   }
 
-  getRowCol(){
+  getRowCol() {
     // calc letak di canvas
-    let zeroIndexPos = this.pos-1;
+    let zeroIndexPos = this.pos - 1;
 
     let x = zeroIndexPos % 10;
     let y = Math.floor((99 - zeroIndexPos) / 10);
 
-    if(y%2==0){
-        x = 9 - x;
+    if (y % 2 == 0) {
+      x = 9 - x;
     }
-    return x,y
+    return x, y;
   }
 
   render(canvas, context) {
@@ -29,7 +29,8 @@ export class Player {
     let pieceSize = unitLength * 0.6;
 
     // calc letak di canvas
-    let x,y = this.getRowCol();
+    let x,
+      y = this.getRowCol();
 
     x = Math.floor(x * unitLength + pieceSize / 4);
     y = Math.floor(y * unitLength + pieceSize / 4);
