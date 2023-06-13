@@ -151,13 +151,5 @@ rollButton.addEventListener("click", function () {
 
   // add logic ngecek tile ada snake or ladder
 
-  // clear canvas board
-  canvas.clear;
-  drawBoard(canvas, context, boardImg);
-
-  // render all player
-  playerList.forEach((player) => {
-    // Perform some action for each player
-    player.render(canvas, context);
-  });
+  // harusnya aman, udah ada game loop
 });
