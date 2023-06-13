@@ -61,21 +61,6 @@ const renderChatPlayers = () => {
   });
 };
 
-const joinGame = (e) => {
-  e.preventDefault();
-  if (inputUsername.value === "") {
-    return alert("Username tidak boleh kosong");
-  }
-
-  username = inputUsername.value;
-  // add event here
-
-  // delete join button
-  document.getElementById("join-button").remove();
-  // make disable input
-  inputUsername.setAttribute("disabled", true);
-};
-
 function drawBoard(canvas, context, boardImg) {
   // Calculate the scale factor to fit the image within the canvas
   let scale = Math.min(
@@ -153,3 +138,20 @@ rollButton.addEventListener("click", function () {
 
   // harusnya aman, udah ada game loop
 });
+
+// logical window render
+// window logical render
+window.joinGame = (e) => {
+  e.preventDefault();
+  if (inputUsername.value === "") {
+    return alert("Username tidak boleh kosong");
+  }
+
+  username = inputUsername.value;
+  // add event here
+
+  // delete join button
+  document.getElementById("join-button").remove();
+  // make disable input
+  inputUsername.setAttribute("disabled", true);
+};
