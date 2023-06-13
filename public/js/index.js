@@ -1,5 +1,5 @@
 // Import the class
-import { Player } from './player.js';
+import { Player } from "./player.js";
 
 let username = "";
 let onlinePlayers = ["avin", "rama", "rere"];
@@ -76,25 +76,25 @@ const joinGame = (e) => {
   inputUsername.setAttribute("disabled", true);
 };
 
-function drawBoard(canvas, context, boardImg){
-  boardImg.onload = function() {
+function drawBoard(canvas, context, boardImg) {
+  // Calculate the scale factor to fit the image within the canvas
+  let scale = Math.min(
+    canvas.width / boardImg.width,
+    canvas.height / boardImg.height
+  );
 
-    // Calculate the scale factor to fit the image within the canvas
-    let scale = Math.min(canvas.width / boardImg.width, canvas.height / boardImg.height);
-    
-    // Calculate the new dimensions of the image
-    let newWidth = boardImg.width * scale;
-    let newHeight = boardImg.height * scale;
+  // Calculate the new dimensions of the image
+  let newWidth = boardImg.width * scale;
+  let newHeight = boardImg.height * scale;
 
-    // Calculate the position to center the image on the canvas
-    let x = (canvas.width - newWidth) / 2;
-    let y = (canvas.height - newHeight) / 2;
+  // Calculate the position to center the image on the canvas
+  let x = (canvas.width - newWidth) / 2;
+  let y = (canvas.height - newHeight) / 2;
 
-    // console.log(x, y, canvas.width, newHeight);
-    // Draw the resized image on the canvas
-    context.drawImage(boardImg, x, y, newWidth, newHeight);
-  };
-};
+  // console.log(x, y, canvas.width, newHeight);
+  // Draw the resized image on the canvas
+  context.drawImage(boardImg, x, y, newWidth, newHeight);
+}
 
 // draw the first board (later di game loop)
 let canvas = document.getElementById("game-canvas");
@@ -105,9 +105,10 @@ let context = canvas.getContext("2d");
 let boardImg = new Image();
 let boardType = 1;
 boardImg.src = `/images/Boards/Board-${boardType}.png`;
-drawBoard(canvas, context, boardImg);
 renderOnlinePlayers();
 renderChatPlayers();
+
+// ni nyoba elemen gameplay outside of socket socketan
 
 // dummy buat list player ceritanya
 let playerList = [
@@ -116,7 +117,47 @@ let playerList = [
   new Player(2, "dummy3", "/images/Pieces/GreenPiece.png", 3),
 ];
 
-playerList.forEach((player) => {
-  // Perform some action for each player
-  player.render(canvas, context);
+// GAME MAIN LOOP??
+
+// Set up a timer or animation loop to repeatedly draw the image
+function drawImage() {
+  // Clear the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // draw le board
+  drawBoard(canvas, context, boardImg);
+
+  // draw le player
+  playerList.forEach((player) => {
+    // Perform some action for each player
+    player.render(canvas, context);
+  });
+
+  // Schedule the next frame
+  requestAnimationFrame(drawImage);
+}
+
+// Start the animation loop
+drawImage();
+
+// coba meng main
+let rollButton = document.getElementById("roll-btn");
+let thisClientIndex = 1; // misal aja
+// Add event listener for the "click" event
+rollButton.addEventListener("click", function () {
+  // Code to be executed when the button is clicked
+  let fate = gachaDiceFate();
+  playerList[thisClientIndex].pos += fate;
+
+  // add logic ngecek tile ada snake or ladder
+
+  // clear canvas board
+  canvas.clear;
+  drawBoard(canvas, context, boardImg);
+
+  // render all player
+  playerList.forEach((player) => {
+    // Perform some action for each player
+    player.render(canvas, context);
+  });
 });
