@@ -173,6 +173,8 @@ drawImage();
 // ROLL
 let rollButton = document.getElementById("roll-btn");
 let selfmsg = document.getElementById("self-msg");
+let diceImg = document.getElementById("dice-img");
+
 // Add event listener for the "click" event
 rollButton.addEventListener("click", function () {
   // Code to be executed when the button is clicked
@@ -186,9 +188,53 @@ rollButton.addEventListener("click", function () {
   // ooh giliran kite, gas
   let fate = gachaDiceFate();
   selfmsg.textContent = "You just rolled " + fate;
+
+  // Start the dice rolling animation
+  rollDiceAnimation(diceImg, fate);
+
   // bilangan ke server, nanti server nentuin final osisi
   socket.emit("server-playerGerak", myIndex, fate);
 });
+
+// Function to perform the dice rolling animation
+function rollDiceAnimation(diceImg, rollResult) {
+  // Array of dice images
+  const diceImages = [
+    "/images/Dices/Dices-1.png",
+    "/images/Dices/Dices-2.png",
+    "/images/Dices/Dices-3.png",
+    "/images/Dices/Dices-4.png",
+    "/images/Dices/Dices-5.png",
+    "/images/Dices/Dices-6.png",
+  ];
+
+  // Number of animation frames
+  const frames = 10; // 20
+
+  // Delay between each frame in milliseconds
+  const frameDelay = 50; // 100
+
+  let frameCount = 0;
+
+  let rollAnimation = setInterval(() => {
+    // Generate a random dice image index
+    let randomIndex = Math.floor(Math.random() * diceImages.length);
+
+    // Update the dice image source
+    diceImg.src = diceImages[randomIndex];
+
+    frameCount++;
+
+    // Check if the animation is complete
+    if (frameCount === frames) {
+      // Update the dice image source with the final roll result
+      diceImg.src = diceImages[rollResult - 1];
+
+      // Clear the animation interval
+      clearInterval(rollAnimation);
+    }
+  }, frameDelay);
+}
 
 // READY
 let readyButton = document.getElementById("ready-btn");
