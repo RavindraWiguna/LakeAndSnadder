@@ -8,6 +8,8 @@ export class Player {
     // console.log(this.spritePath);
     this.sprite.src = this.spritePath;
     this.pos = pos;
+    this.finalpos = pos;
+    this.oldpos = pos;
   }
 
   getRowCol() {

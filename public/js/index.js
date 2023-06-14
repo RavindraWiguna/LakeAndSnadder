@@ -148,7 +148,30 @@ renderChatPlayers();
 
 // GAME MAIN LOOP??
 // Set up a timer or animation loop to repeatedly draw the image
-function drawImage() {
+let totalStep = 60;
+let delay = 1000/30;
+let lastFrameTime = 0;
+let isDraw = false;
+function drawImage(timestamp) {
+  // Calculate the elapsed time since the last frame
+  const elapsedTime = timestamp - lastFrameTime;
+  // console.log(elapsedTime);
+  // Check if enough time has passed to proceed to the next frame
+  // if (elapsedTime < delay) {
+  //   // skips
+  //   requestAnimationFrame(drawImage);
+  // }
+  
+  // Update the last frame time
+  if(elapsedTime >= delay){
+    lastFrameTime = timestamp;
+    isDraw=true;
+  }else{
+    isDraw=false
+  }
+
+
+  if(isDraw){
   // Clear the canvas
   context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -158,15 +181,33 @@ function drawImage() {
   // draw le player
   playersData.forEach((player) => {
     // Perform some action for each player
-    player.render(canvas, context);
+
+    // cek apa dia gerak
+    if(player.oldpos == player.finalpos){
+      player.render(canvas, context);
+    }else{
+      // klo gak gerak kita animate gerak
+      let unitStep = (player.finalpos - player.oldpos)/totalStep;
+      console.log(unitStep, player.pos, player.oldpos, player.finalpos, player.name);
+      player.pos += unitStep;
+      // if udah sampe
+      if(player.pos > player.finalpos){
+        player.pos = player.finalpos;
+        player.oldpos = player.finalpos;
+      }
+      player.render(canvas, context);
+    }
+
   });
+  }
+
 
   // Schedule the next frame
   requestAnimationFrame(drawImage);
 }
 
 // Start the animation loop
-drawImage();
+requestAnimationFrame(drawImage);
 
 // =============== EVENT LISTENER ===============
 
@@ -340,7 +381,9 @@ socket.on("client-roomIsFull", () => {
 });
 
 socket.on("client-updatePlayerPosTurn", (indexPlayer, finalPosition, turn) => {
-  playersData[indexPlayer].pos = finalPosition;
+  playersData[indexPlayer].oldpos = playersData[indexPlayer].pos;
+  playersData[indexPlayer].finalpos = finalPosition;
+  // playersData[indexPlayer].pos = finalPosition;
   gameTurn = turn;
   let gamemsg = document.getElementById("game-msg");
   gamemsg.textContent =
